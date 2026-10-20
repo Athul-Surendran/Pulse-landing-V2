@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#F3F5F8" />
+    <meta name="description" content="Follow one cooling alarm through a connected building. An interactive architectural story about chilled water, airflow, and recovery." />
+    <title>Pulse — A building, in balance.</title>
+    <link rel="icon" type="image/png" href="/pulse-icon.png" />
+  </head>
+  <body class="quiet-layout">
+    <div id="experience">
+      <div class="scene" id="scene" aria-label="Interactive 3D building and connected HVAC system"></div>
+      <div class="scene-vignette"></div>
+      <div class="device-hotspots" id="device-hotspots" aria-label="Room equipment"></div>
+      <div class="device-tooltip" id="device-tooltip" role="tooltip" aria-hidden="true">
+        <div class="device-tooltip-content">
+          <div class="device-tooltip-heading"><strong id="device-tooltip-title"></strong><span class="simulation-badge">Simulation</span></div>
+          <p id="device-tooltip-description"></p>
+          <div class="device-health"><span>Device health</span><strong id="device-health-value"></strong><span id="device-connection"></span></div>
+          <div class="device-room-counts" aria-label="Electronic devices in this room">
+            <div><strong id="device-active-count"></strong><span>Active</span></div>
+            <div><strong id="device-inactive-count"></strong><span>Inactive</span></div>
+            <div><strong id="device-total-count"></strong><span>Room devices</span></div>
+          </div>
+          <dl class="device-readings" id="device-readings"></dl>
+          <div class="device-trend" id="device-trend" hidden>
+            <div><span>Temperature / story trend</span><strong id="device-trend-range"></strong></div>
+            <svg id="device-trend-chart" viewBox="0 0 280 48" role="img" aria-label="Simulated room temperature during recovery"><path class="device-trend-grid" d="M0 12H280M0 36H280"/><polyline id="device-trend-line" points=""/></svg>
+          </div>
+          <p class="device-data-note">Illustrative values, not live telemetry. Counts exclude passive safety equipment.</p>
+        </div>
+      </div>
+      <header class="header">
+        <a class="wordmark" href="#" aria-label="Pulse, return to beginning"><img src="/pulse-logo.png" alt="Pulse" width="802" height="302" /></a>
+        <button class="menu-toggle" id="menu-toggle" aria-expanded="false" aria-controls="primary-nav">Menu <span aria-hidden="true">+</span></button>
+        <nav class="primary-nav" id="primary-nav" aria-label="Main navigation">
+          <button disabled title="Preview only - destination not configured">Platform</button>
+          <button disabled title="Preview only - destination not configured">Solutions</button>
+          <button disabled title="Preview only - destination not configured">Resources</button>
+          <button disabled title="Preview only - destination not configured">Multi-site</button>
+          <button disabled title="Preview only - destination not configured">Intelligence</button>
+        </nav>
+        <button class="contact-button" disabled title="Preview only - contact destination not configured">Contact <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 15 15 5M5 5h10v10"/></svg></button>
+      </header>
+
+      <div class="hero-position">
+      <section class="landing-hero" id="landing-hero" aria-labelledby="hero-title">
+        <h1 id="hero-title"><span>One platform.</span> <span>Smarter buildings.</span></h1>
+        <div class="hero-actions">
+          <button class="hero-button demo-button" disabled title="Preview only - booking destination not configured">Book your live demo <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 15 15 5M5 5h10v10"/></svg></button>
+          <button class="hero-button explore-button" id="explore-platform">Explore the platform</button>
+        </div>
+      </section>
+      </div>
+
+      <div class="hero-position final-position">
+      <section class="final-hero" id="final-hero" aria-labelledby="final-title" inert>
+        <h2 id="final-title">Explore Pulse Building Management Solution</h2>
+        <p class="final-description"><span>Connected systems. Complete visibility.</span><span>Smarter control. More comfortable spaces.</span></p>
+        <div class="hero-actions">
+          <button class="hero-button demo-button" disabled title="Preview only - booking destination not configured">Request for a demo <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 15 15 5M5 5h10v10"/></svg></button>
+        </div>
+      </section>
+      </div>
+
+      <svg class="alarm-connector" id="alarm-connector" aria-hidden="true" hidden>
+        <path id="alarm-connector-path" />
+        <circle id="alarm-connector-target" r="4" />
+      </svg>
+      <aside class="alarm-panel glass-panel" id="alarm-panel" aria-labelledby="alarm-panel-title" hidden>
+        <div class="panel-heading"><h2 id="alarm-panel-title">Alarm center</h2><span class="simulation-badge">Simulation</span></div>
+        <div class="alarm-details" id="alarm-details">
+          <div class="fault-preview">
+            <p class="eyebrow">Chilled-water branch / Level 10</p>
+            <div class="valve-preview" id="valve-preview" role="button" aria-label="Open 360-degree valve inspection. Drag or use arrow keys to rotate inline." aria-haspopup="dialog" aria-controls="valve-dialog" tabindex="0"></div>
+            <p class="preview-error" id="preview-error" role="alert" hidden>3D inspection preview unavailable. Continue with the building view.</p>
+            <div class="preview-toolbar"><span>Click to expand / Drag to rotate</span><button id="preview-pause" aria-pressed="false">Pause rotation</button></div>
+          </div>
+          <p class="alarm-severity"><span></span> Cooling alarm active</p>
+          <h3>Chilled-water pipe blocked</h3>
+          <p class="panel-description">An obstruction is restricting chilled-water flow to the office fan coil.</p>
+          <dl class="alarm-metadata"><div><dt>Equipment</dt><dd>FCU-10</dd></div><div><dt>Priority</dt><dd class="priority-high">High</dd></div><div><dt>Impact</dt><dd>Cooling interrupted</dd></div></dl>
+          <button class="inspect-button" id="inspect-office">Inspect affected office <span aria-hidden="true">&#8599;</span></button>
+          <section class="other-alerts" aria-labelledby="other-alerts-title">
+            <div class="other-alerts-heading"><h4 id="other-alerts-title">Other sample alerts</h4><span>02</span></div>
+            <ul>
+              <li><span class="alert-dot advisory"></span><div><strong>Filter inspection due</strong><small>AHU-02 / Plant room</small></div><span class="alert-tag">Advisory</span></li>
+              <li><span class="alert-dot resolved"></span><div><strong>Supply temperature restored</strong><small>FCU-06 / Level 06</small></div><span class="alert-tag">Resolved</span></li>
+            </ul>
+          </section>
+          <p class="panel-note">Illustrative equipment and sample alerts. Not live telemetry.</p>
+        </div>
+        <div id="recovery-checklist" hidden>
+          <p class="checklist-summary" id="checklist-summary">0 of 5 checks complete</p>
+          <ol class="recovery-steps">
+            <li><label><input type="checkbox" disabled /><span><strong>Review the fault</strong><small>Locate the interrupted branch.</small></span></label></li>
+            <li><label><input type="checkbox" disabled /><span><strong>Isolate the section</strong><small>Close the illustrated isolation valves.</small></span></label></li>
+            <li><label><input type="checkbox" disabled /><span><strong>Clear the blockage</strong><small>Remove the obstruction.</small></span></label></li>
+            <li><label><input type="checkbox" disabled /><span><strong>Restore the pipe</strong><small>Close the sleeve and reopen the valves.</small></span></label></li>
+            <li><label><input type="checkbox" disabled /><span><strong>Verify circulation</strong><small>Confirm flow through the cooling coil.</small></span></label></li>
+          </ol>
+          <p class="panel-note" id="checklist-note">Scroll to advance the simulated recovery.</p>
+        </div>
+      </aside>
+      <section class="recovery-progress glass-panel" id="recovery-progress" aria-labelledby="recovery-title" hidden>
+        <p class="eyebrow">Level 10 / Scroll-driven recovery</p>
+        <div class="progress-heading"><h2 id="recovery-title">Cooling recovery</h2><span id="recovery-percent" aria-hidden="true">0%</span></div>
+        <div class="progress-track" id="recovery-bar" role="progressbar" aria-labelledby="recovery-title" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="progress-fill" id="recovery-fill"></div></div>
+        <p class="progress-status" id="recovery-status">Investigating the fault</p>
+      </section>
+      <aside class="chapter-bar">
+        <nav class="chapters" aria-label="Story chapters">
+          <button data-chapter="0" class="active" aria-current="step" aria-label="Chapter 1: Overview"><span class="chapter-track"></span></button>
+          <button data-chapter="1" aria-label="Chapter 2: Inside"><span class="chapter-track"></span></button>
+          <button data-chapter="2" aria-label="Chapter 3: Blockage"><span class="chapter-track"></span></button>
+          <button data-chapter="3" aria-label="Chapter 4: Repair"><span class="chapter-track"></span></button>
+          <button data-chapter="4" aria-label="Chapter 5: Recovery"><span class="chapter-track"></span></button>
+          <button data-chapter="5" aria-label="Chapter 6: Airflow"><span class="chapter-track"></span></button>
+          <button data-chapter="6" aria-label="Chapter 7: Circulation"><span class="chapter-track"></span></button>
+          <button data-chapter="7" aria-label="Chapter 8: In balance"><span class="chapter-track"></span></button>
+        </nav>
+        <button class="motion-button" id="motion-button" aria-pressed="false" aria-label="Pause scene animation"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M6 4v10M12 4v10" fill="none" stroke="currentColor" stroke-width="2"/></svg></button>
+      </aside>
+      <button class="scroll-cue" id="scroll-cue" aria-label="Scroll to continue the story"><span>Scroll</span><svg viewBox="0 0 20 24" aria-hidden="true"><path d="M10 3v16m-5-5 5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.3"/></svg></button>
+      <div id="loading" class="loading" role="status" aria-label="Loading Pulse building"><div class="loading-spinner"></div></div>
+      <div id="scene-error" class="scene-error" hidden><strong>The 3D view could not start.</strong><p>Please enable hardware acceleration and refresh in a WebGL-capable browser.</p></div>
+      <p class="sr-only" id="accessible-caption" aria-live="polite"></p>
+    </div>
+    <dialog class="valve-dialog glass-panel" id="valve-dialog" aria-labelledby="valve-dialog-title" aria-describedby="valve-dialog-help">
+      <div class="valve-dialog-heading">
+        <div><p class="eyebrow">Level 10 / Chilled-water branch</p><h2 id="valve-dialog-title">360&#176; valve inspection</h2></div>
+        <button class="valve-dialog-close" id="valve-dialog-close" aria-label="Close valve inspection"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
+      </div>
+      <div class="valve-dialog-view" id="valve-dialog-view" tabindex="0" role="group" aria-label="Interactive valve model. Scroll or drag to rotate through 360 degrees; arrow keys also rotate." autofocus></div>
+      <p class="preview-error" id="valve-dialog-error" role="alert" hidden>The 3D inspection could not start. Close and reopen to try again.</p>
+      <div class="valve-dialog-footer"><p id="valve-dialog-help">Scroll to rotate 360&#176;. Drag to orbit. Arrow keys also work.</p><button class="explore-button" id="valve-dialog-reset">Reset view</button></div>
+    </dialog>
+    <div id="scroll-story" aria-hidden="true"></div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
