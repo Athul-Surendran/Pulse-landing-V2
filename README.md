@@ -97,7 +97,7 @@ Work due times refer separately to **21 October 2026**, local time. No real
 assignments, equipment changes, backend calls or savings claims are made.
 
 The modules are independent of the story entry point: `index.js` mounts the
-section, `charts.js` builds shared SVG/data tables, `model.js` dynamically creates
+reusable `section.js`, `charts.js` builds shared SVG/data tables, `model.js` dynamically creates
 only the active lightweight tower, and `style.css` scopes its paper/Barlow UI.
 Three.js is the existing dependency; no district renderer is duplicated. The
 model initializes near view, uses capped DPR (1.5), renders only on change/resize
@@ -115,7 +115,7 @@ const dispose = mountPerformance(document.querySelector('#pulse-performance'), {
 ```
 
 For another host, supply a section with `id="pulse-performance"` and
-`aria-labelledby="pp-title"` and call the exported `mountPerformance` once.
+`aria-labelledby="pp-title"` and import `mountPerformance` from `section.js` once.
 Keep the scoped stylesheet and shared data/charts/model modules; call the returned
 function on unmount. The IDs assume a single section instance per document.
 

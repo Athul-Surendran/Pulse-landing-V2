@@ -46,6 +46,7 @@ test('tabs switch by mouse and keyboard, keep focus, and mount only one model', 
 
 test('floor scope, chart, data table and derived metrics update together and reset', async ({ page }) => {
   await open(page);
+  await page.getByLabel('Explore a floor').focus();
   await page.getByLabel('Explore a floor').selectOption('10');
   await expect(page.getByLabel('Explore a floor')).toBeFocused();
   const weight = fixture.floors[9].weight / fixture.floors.reduce((sum, f) => sum + f.weight, 0);
@@ -135,5 +136,23 @@ test('390px and tablet layouts fit both alternatives with readable controls', as
       await expect(section(page).getByRole('tabpanel')).toBeVisible();
       await expect(section(page).locator('.pp-profile svg')).toBeVisible();
     }
+  }
+});
+
+test('either alternative mounts independently and releases its model on unmount', async ({ page }) => {
+  await page.route('**/src/performance/index.js', route => route.abort());
+  await page.goto('/#pulse-performance');
+  for (const variant of ['performance', 'action']) {
+    await page.evaluate(async key => {
+      const { mountPerformance } = await import('/src/performance/section.js');
+      window.disposePreview = mountPerformance(document.querySelector('#pulse-performance'), { alternatives: [key] });
+    }, variant);
+    await section(page).evaluate(element => element.scrollIntoView({ block: 'start' }));
+    await expect(section(page).getByRole('tab')).toHaveCount(1);
+    await expect(section(page).locator('canvas')).toHaveCount(1);
+    await expect(section(page).locator('.pp-model-status')).toContainText('Architectural study');
+    await page.evaluate(() => window.disposePreview());
+    await expect(section(page)).toBeEmpty();
+    await expect(section(page).locator('canvas')).toHaveCount(0);
   }
 });
