@@ -463,7 +463,9 @@ if (scene) {
     chapterStarts.forEach((start, i) => { if (time >= start) chapter = i; });
     showChapter(chapter);
     updateStatus(time);
-    if (!valveDialog.open) {
+    const performanceSection = $('#pulse-performance');
+    const storyVisible = !performanceSection || performanceSection.getBoundingClientRect().top >= innerHeight;
+    if (!valveDialog.open && storyVisible && !document.hidden) {
       scene.render(deltaMilliseconds / 1000);
       preview?.render(deltaMilliseconds / 1000, !panel.hidden && !details.hidden, userPaused || reducedMotion);
     }
