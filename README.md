@@ -64,3 +64,64 @@ npm test
 ```
 
 Tests cover delayed alarm activation and blinking, forward/reverse narrative states, restored flow preceding alarm clearance, moving/paused turbines and traffic, landing navigation and hero visibility, Pulse/Barlow assets, right-side navigation, smooth scroll catch-up, high-density rendering budgets, mobile overflow, reduced motion, browser errors, FCU clearances, and continuity at every water-route junction.
+
+## Building performance section
+
+The isolated `#pulse-performance` section follows `#scroll-story` in `index.html`.
+Scroll past the existing final CTA, or open `/#pulse-performance`. The original
+story spacer, chapter timings, controls and `window.__FORMA__` diagnostics are
+unchanged. The story renderer rests when this section enters view, after the
+story's end; scrolling back resumes it.
+
+- **01 Building Performance:** select a floor in the model or the HTML selector.
+  Consumption, estimated cost, period intensity, hourly-average peak, chart and
+  hourly table update together. **Reset** returns to the building total.
+- **02 Energy to Action:** building-wide end-use distribution leads to a Level 10
+  AHU cutaway and a filterable sample work preview. Open an item for its owner,
+  due time and next step, or follow the schedule observation to its related review.
+- Tabs support Left/Right, Home and End. Both views have readable chart summaries
+  and an hourly data table. Without WebGL, the labelled SVG schematic and all
+  HTML controls/data remain available. Views are static, including with reduced
+  motion; there is no automatic rotation or scroll/touch capture.
+
+`src/performance/data.js` is the deterministic fixture: 24 one-hour average
+electricity-demand samples for **20 October 2026**, totalling **4,803 kWh**.
+Estimated energy-only cost uses **GBP £0.18/kWh** (£864.54), excluding standing
+charges and tax. Fourteen illustrative floors each have 720 m² (10,080 m² total).
+Floor weights allocate the same hourly shape, not separately metered readings.
+Period intensity is daily kWh divided by the selected area; the peak is an
+hourly average, not an instantaneous or tariff demand peak. End uses allocate
+48%/24%/20%/8% to cooling, lighting, plug loads and common services, respectively.
+These are illustrative allocations, not an AHU submeter or evidence of waste.
+Work due times refer separately to **21 October 2026**, local time. No real
+assignments, equipment changes, backend calls or savings claims are made.
+
+The modules are independent of the story entry point: `index.js` mounts the
+reusable `section.js`, `charts.js` builds shared SVG/data tables, `model.js` dynamically creates
+only the active lightweight tower, and `style.css` scopes its paper/Barlow UI.
+Three.js is the existing dependency; no district renderer is duplicated. The
+model initializes near view, uses capped DPR (1.5), renders only on change/resize
+and releases GPU resources on tab switches. Intersection/visibility observers
+pause offscreen drawing; the returned cleanup function also removes observers
+and listeners and is used on HMR.
+
+To keep just one alternative, change the mounting call at the bottom of
+`src/performance/index.js` to:
+
+```js
+const dispose = mountPerformance(document.querySelector('#pulse-performance'), {
+  alternatives: ['performance'], // Or ['action'] for Energy to Action.
+});
+```
+
+For another host, supply a section with `id="pulse-performance"` and
+`aria-labelledby="pp-title"` and import `mountPerformance` from `section.js` once.
+Keep the scoped stylesheet and shared data/charts/model modules; call the returned
+function on unmount. The IDs assume a single section instance per document.
+
+Focused checks: `npm test -- tests/performance.spec.js`.
+Desktop and 390px captures of both alternatives:
+[Performance / desktop](docs/previews/performance-desktop.png),
+[Performance / mobile](docs/previews/performance-mobile.png),
+[Energy to Action / desktop](docs/previews/action-desktop.png),
+[Energy to Action / mobile](docs/previews/action-mobile.png).

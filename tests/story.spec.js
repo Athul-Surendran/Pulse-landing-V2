@@ -8,7 +8,8 @@ async function open(page) {
 
 async function seek(page, time) {
   await page.evaluate(value => {
-    window.scrollTo({ top: (document.documentElement.scrollHeight - innerHeight) * value / 8, behavior: 'instant' });
+    const story = document.querySelector('#scroll-story');
+    window.scrollTo({ top: story.offsetTop + (story.offsetHeight - innerHeight) * value / 8, behavior: 'instant' });
   }, time);
   await expect.poll(async () => (await page.evaluate(() => window.__FORMA__.getState())).time).toBeCloseTo(time, 1);
 }
@@ -770,7 +771,8 @@ test('scroll catch-up advances smoothly and reverses without a timeline jump', a
   for (const [target, direction] of [[2.5, 1], [0, -1]]) {
     const samples = await page.evaluate(async time => {
       const frames = [window.__FORMA__.getState().time];
-      window.scrollTo({ top: (document.documentElement.scrollHeight - innerHeight) * time / 8, behavior: 'instant' });
+      const story = document.querySelector('#scroll-story');
+      window.scrollTo({ top: story.offsetTop + (story.offsetHeight - innerHeight) * time / 8, behavior: 'instant' });
       const started = performance.now();
       while (performance.now() - started < 1600) {
         await new Promise(requestAnimationFrame);
